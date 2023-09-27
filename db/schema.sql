@@ -9,7 +9,7 @@ CREATE TABLE departments (
 )
 
 CREATE TABLE roles (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     job_id VARCHAR(35) NOT NULL UNIQUE,
     salary INT NOT NULL, 
     departments_id INT NOT NULL,
