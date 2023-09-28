@@ -3,10 +3,25 @@ const mysql = require("mysql");
 const db = require(".");
 require("console.table");
 
-const connection = mysql.createConnection ({
-})
-const PORT = process.env.PORT || 3001;
 
+const express = require('express');
+// // Import and require mysql2
+// const mysql = require('mysql2');
+
+const PORT = process.env.PORT || 3001;
+const app = express();
+// Connect to database
+const db = mysql.createConnection(
+  {
+    host: 'localhost',
+    // MySQL username,
+    user: 'root',
+    // TODO: Add MySQL password here
+    password: '',
+    database: 'employees_db'
+  },
+  console.log(`Connected to database.`)
+);
 
 function allDepartments() {
     const sql = 'SELECT * FROM departments'
