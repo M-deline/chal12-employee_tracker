@@ -14,9 +14,9 @@ VALUES ("Lead Web Designer", 1, 85000),
 ("Support", 4, 35000);
 
 INSERT INTO employees (first_name, last_name, job_id, manager_id)
-VALUES ("Kelly", "Freeman", 2),
-("Joshua", "Petrov", 3, 1),
-("Arthur ", "Jones", 1, 1),
+VALUES ("Kelly", "Freeman", 1, NULL),
+("Joshua", "Petrov", 2, 1),
+("Arthur ", "Jones", 3, 1),
 ("Sergio", "Castillo", 3, 1),
 ("Eraclio", "Reyes", 4, 1);
 
