@@ -3,7 +3,8 @@ const mysql = require("mysql");
 const db = require(".");
 require("console.table");
 
-
+const connection = mysql.createConnection ({
+})
 const PORT = process.env.PORT || 3001;
 
 
