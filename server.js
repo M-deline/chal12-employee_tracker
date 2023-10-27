@@ -10,27 +10,27 @@ const connection = mysql.createConnection({
   database: 'employees_db',
 });
 
-connection.connect(function(err) {
-  if (err) {
-    console.error('Error connecting to MySQL server:', err);
-    return;
-  }
-  console.log('Connected to MySQL server');
-  init();
-});
+// connection.connect(function(err) {
+//   if (err) {
+//     console.error('Error connecting to MySQL server:', err);
+//     return;
+//   }
+//   console.log('Connected to MySQL server');
+//   init();
+// });
 
-try {
-    connection.connect();
-    console.log('Connected to MySQL server');
-  } catch (error) {
-    console.error('Error connecting to MySQL server:', error);
-  }
+// try {
+//     connection.connect();
+//     console.log('Connected to MySQL server');
+//   } catch (error) {
+//     console.error('Error connecting to MySQL server:', error);
+//   }
 
-connection.connect(function(err) {
-    if (err) throw err;
-    console.log("sucess " + connection.threadId)
-    init()
-})
+// connection.connect(function(err) {
+//     if (err) throw err;
+//     console.log("sucess " + connection.threadId)
+//     init()
+// })
 
 
 //Your MySQL connection id is 12
@@ -162,5 +162,12 @@ function updateEmployee() {
     init()
 }; init();
 
-console.log("Starting server...");
+// connection.end((err) => {
+//     if (err) {
+//       console.error('Error closing the database connection:', err);
+//       return;
+//     }
+//     console.log('Database connection closed');
+
+// console.log("Starting server...");});
 // rest of your server code here
