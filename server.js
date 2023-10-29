@@ -76,7 +76,7 @@ function init() {
             addEmployee(addEmployee);
         }
         else if (answer.choices === "Update Employee") {
-            updateEmployee();
+            updateEmployee(updateEmployee);
         }
     })
     .catch((err) => {
@@ -220,16 +220,41 @@ function addEmployee(departmentChoices) {
   });
 }
 
-function updateEmployee() {
-    const sql = "UPDATE employees";
-    db.query(sql, (err, rows) => {
-        if (err) {
-            console.log(err)
+function updateEmployee(departmentChoices) {
+    inquirer.prompt (
+        [
+            {
+                type: "input",
+                name: "employee_update",
+                message: "Please choose which employee to update",
+            },
+            {
+                type: "input",
+                name: "update_first_name",
+                message: "What is the employee's first name?"
+            },
+            {
+                type: "input",
+                name: "update_last_name",
+                message: "What is the employee's last name?"
+            },
+            {
+                type: "input",
+                name: "job_id",
+                message: "What is the employee's new role?"
+            }
+        ]
+    )
+    .then ((updateFunction) => {
+        const sql = "UPDATE employees SET ? WHERE ?";
+        db.query(sql,updateFunction, (err, res) => {
+            if (err) throw err;
+            console.log("Employee updated successfully");
+            init();
         }
-        console.table(rows)
-        init()
-    });
-}; 
+        )
+    })
+}
 
 function getDepartmentChoices(cb){//cb = callback function
     const sql = "SELECT id AS value, department_name AS name FROM departments";
