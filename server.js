@@ -183,7 +183,7 @@ function addRole(departmentChoices) {
             });
         })
 };
-
+//from tutor session make sql match the javascript in the name to connect them 
 function addEmployee(departmentChoices) {
     inquirer.prompt([
         // prompt for employee information
@@ -222,7 +222,7 @@ function addEmployee(departmentChoices) {
             });
         });
 }
-
+//from tutor session, make sql match the javascript in the name to connect them and use obj literals to make it easier for the user to read and make sure the changes were made in the application. the roleArray takes the roles and will make them appear as a list for user convenience and the the push will take each role and push it into the array the return the array so we see it. and then use the input from the user to update the role. use the correct update syntax.
 function updateEmployee() {
     db.query('SELECT * FROM employees', (err, result) => {
         if (err) throw (err);
