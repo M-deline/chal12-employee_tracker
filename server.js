@@ -1,8 +1,9 @@
 const inquirer = require("inquirer");
-const mysql = require("mysql");
-// require("console.table");
+const mysql = require("mysql2");
+// db = require(".");
+require("console.table");
 
-const connection = mysql.createConnection({
+const db = mysql.createConnection({
   host: 'localhost',
   port: 3306,
   user: 'root',
@@ -10,14 +11,14 @@ const connection = mysql.createConnection({
   database: 'employees_db',
 });
 
-// connection.connect(function(err) {
-//   if (err) {
-//     console.error('Error connecting to MySQL server:', err);
-//     return;
-//   }
-//   console.log('Connected to MySQL server');
-//   init();
-// });
+db.connect(function(err) {
+  if (err) {
+    console.error('Error connecting to MySQL server:', err);
+    return;
+  }
+  console.log('Connected to MySQL server');
+  init();
+});
 
 // try {
 //     connection.connect();
@@ -54,8 +55,8 @@ function init() {
     }
     )
     .then(function(answer) {
-        console.log(answer);
-        
+        // console.log(answer);
+    
         if (answer.choices === "View all departments") {
             allDepartments();
         }
@@ -66,10 +67,10 @@ function init() {
             allEmployees();
         }
         else if (answer.choices === "Add a department") {
-            addDepartment();
+            addDepartment(addDepartment);
         }
         else if (answer.choices === "Add a role") {
-            addRole();
+            getDepartmentChoices(addRole);
         }
         else if (answer.choices === "Add an employee") {
             addEmployee();
@@ -91,21 +92,23 @@ function allDepartments() {
         if (err) {
             console.log(err)
         }
-        console.log(rows)
+        console.table(rows)
+        init()
     });
-    init()
-}; init();
+};
+// }; init();
 
 function allRoles() {
+
     const sql = "SELECT * FROM roles";
     db.query(sql, (err, rows) => {
         if (err) {
             console.log(err)
         }
-        console.log(rows)
+        console.table(rows)
+        init()
     });
-    init()
-}; init();
+}; 
 
 function allEmployees(){
     const sql = "SELECT * FROM employees";
@@ -113,43 +116,87 @@ function allEmployees(){
         if (err) {
             console.log(err)
         }
-        console.log(rows)
+        console.table(rows)
+        init()
     });
-    init()
-}; init();
+}; 
 
-function addDepartment() {
-    const sql = "INSERT INTO department";
-    db.query(sql, (err, rows) => {
-        if (err) {
-            console.log(err)
-        }
-        console.log(rows)
-    });
-    init()
-}; init();
+function addDepartment(departmentChoices) {
+    inquirer.prompt(
+        //question for each department_name
+        [
+            { 
+                type: "input",
+                name: "department_name",
+                message: "What is the name of the department?"
+            }
+        ]
+    )
+   .then((newDepartment) => {
+ const sql = "INSERT INTO departments SET ?";
+ db.query(sql, newDepartment, (err, rows) => {
+     if (err) {
+         console.log(err)
+     }
+     console.table(rows)
+     console.log('Department added successfully');
+     init()}
+ )})};
 
-function addRole() {
-    const sql = "INSERT INTO roles";
-    db.query(sql, (err, rows) => {
-        if (err) {
-            console.log(err)
-        }
-        console.log(rows)
-    });
-    init()
-}; init();
+    
 
-function addEmployee () {
-    const sql = "INSERT INTO employees";
-    db.query(sql, (err, rows) => {
-        if (err) {
-            console.log(err)
-        }
-        console.log(rows)
+function addRole(departmentChoices) {
+    inquirer.prompt(
+        //question for each job_id, salary, departments_id
+        [
+            { 
+                type: "input",
+                name: "job_id",
+                message: "What is the title of the role?"
+            },
+            { 
+                type: "input",
+                name: "salary",
+                message: "What is the salary of the role?"
+            },
+            { 
+                type: "list",
+                name: "departments_id",
+                message: "What is the department of the role?",
+                choices: departmentChoices
+            }
+        ]
+    )
+    .then((newRole) => {
+        // "INSERT INTO roles (job_id, salary, departments_id) VALUES (?, ?, ?)", [newRole.job_id, newRole.salary, newRole.departments_id]
+
+        const sql = "INSERT INTO roles SET ?";
+        db.query(sql, newRole, (err, rows) => {
+            if (err) {
+                console.log(err)
+            }
+            console.log(`${newRole.job_id} added successfully`);
+            init()
+        });
+    })
+}; 
+
+function addEmployee() {
+  inquirer.prompt([
+    // prompt for employee information
+  ]).then((newEmployee) => {
+    const sql = "INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
+    const values = [answers.first_name, answers.last_name, answers.role_id, answers.manager_id];
+    db.query(sql, values, (err, result) => {
+      if (err) {
+        console.error("Error adding employee:", err);
+        return;
+      }
+      console.log("Employee added successfully");
+      init();
     });
-    init()
-}; init();
+  });
+}
 
 function updateEmployee() {
     const sql = "UPDATE employees";
@@ -157,17 +204,46 @@ function updateEmployee() {
         if (err) {
             console.log(err)
         }
-        console.log(rows)
+        console.table(rows)
+        init()
     });
-    init()
-}; init();
+}; 
 
-// connection.end((err) => {
-//     if (err) {
-//       console.error('Error closing the database connection:', err);
-//       return;
+function getDepartmentChoices(cb){//cb = callback function
+    const sql = "SELECT id AS value, department_name AS name FROM departments";
+    
+    db.query(sql, (err, departments) => {
+        if (err) {
+            console.log(err)
+        }
+
+        cb(departments);
+    })
+}
+
+// process.stdin.setMaxListeners(20);
+
+////explain inquire choice with objects
+// inquirer.prompt([
+//     {
+//         type: "list",
+//         name: "choices",
+//         message: "Please select one of the following...",
+//         choices: [
+//             {
+//                 name: "View all departments",
+//                 value: 1
+//             },
+//             {
+//                 name: "View all roles",
+//                 value: 2
+//             },
+//             {
+//                 name: "View all Employees",
+//                 value: 3
+//             }
+//         ]
 //     }
-//     console.log('Database connection closed');
-
-// console.log("Starting server...");});
-// rest of your server code here
+// ]).then((answers)=>{
+//     console.log("hello")
+// })
