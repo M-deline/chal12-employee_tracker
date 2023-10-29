@@ -73,7 +73,7 @@ function init() {
             getDepartmentChoices(addRole);
         }
         else if (answer.choices === "Add an employee") {
-            addEmployee();
+            addEmployee(addEmployee);
         }
         else if (answer.choices === "Update Employee") {
             updateEmployee();
@@ -181,13 +181,35 @@ function addRole(departmentChoices) {
     })
 }; 
 
-function addEmployee() {
+function addEmployee(departmentChoices) {
   inquirer.prompt([
     // prompt for employee information
-  ]).then((newEmployee) => {
-    const sql = "INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
-    const values = [answers.first_name, answers.last_name, answers.role_id, answers.manager_id];
-    db.query(sql, values, (err, result) => {
+    {
+        type: "input",
+        name: "first_name",
+        message: "What is the employee's first name?"
+        },
+        {
+        type: "input",
+        name: "last_name",
+        message: "What is the employee's last name?"
+        },
+    //     {
+    //     type: "input",
+    //     name: "job_id",
+    //     message: "What is the employee's roleid?",
+    //     // choices: departmentChoices
+    //     },
+    //     {
+    //     type: "list",
+    //     name: "manager_id",
+    //     message: "Who is the employee's manager id?",
+    //     // choices: departmentChoices
+    // }
+  ])
+  .then((newEmployee) => {
+    const sql = "INSERT INTO employees SET ?";
+    db.query(sql, newEmployee, (err, results) => {
       if (err) {
         console.error("Error adding employee:", err);
         return;
@@ -221,29 +243,3 @@ function getDepartmentChoices(cb){//cb = callback function
     })
 }
 
-// process.stdin.setMaxListeners(20);
-
-////explain inquire choice with objects
-// inquirer.prompt([
-//     {
-//         type: "list",
-//         name: "choices",
-//         message: "Please select one of the following...",
-//         choices: [
-//             {
-//                 name: "View all departments",
-//                 value: 1
-//             },
-//             {
-//                 name: "View all roles",
-//                 value: 2
-//             },
-//             {
-//                 name: "View all Employees",
-//                 value: 3
-//             }
-//         ]
-//     }
-// ]).then((answers)=>{
-//     console.log("hello")
-// })
